@@ -4,3 +4,7 @@ requests
 wandb
 papermill
 ipykernel
+pandas
+scikit-learn
+torch
+joblib
