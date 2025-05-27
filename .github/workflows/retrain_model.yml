@@ -54,7 +54,8 @@ jobs:
               run: |
                     papermill "notebooks/ExploreWeights&Biases.ipynb" \
                      "notebooks/retrained_sentiment_model.ipynb" \
-                     --log-output
+                     --log-output \
+                     --kernel python3 
             
         
               
