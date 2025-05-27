@@ -1,0 +1,10 @@
+fastapi[standard]
+python-dotenv
+requests
+wandb
+papermill
+ipykernel
+pandas
+scikit-learn
+torch
+joblib
