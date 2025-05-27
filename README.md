@@ -6,15 +6,23 @@ This repo is for backend repo of Mayanmar Language Sentiment Loop.
 Thanks for your great works! Cheers!
 
 # Create Python Virtual Environment 🐍
-- pip3 install virtualenv
-- virtualenv <your-env>
-- source <your-env>/bin/activate
-- <your-env>/bin/pip install <package-name>
+```
+pip3 install virtualenv
+virtualenv <your-env>
+source <your-env>/bin/activate
+<your-env>/bin/pip install <package-name>
+
+```
+
 
 # Starting Server🚀
 First step,
  activate your python virtual environment 
+ ```
    source <your-env>/bin/activate
+```
 
 then, start your server running this cmd in terminal.
+```
 uvicorn main:app --reload
+```
