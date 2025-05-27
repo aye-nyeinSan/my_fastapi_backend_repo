@@ -53,9 +53,9 @@ async def retrainmodel():
         )
         response.raise_for_status()
         
-        return JSONResponse({"message": "Model retraining started",
+        return {"message": "Model retraining started",
             "github_repo": f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}",
-            "status_code": response.status_code}, status_code=response.status_code)
+            "status_code": response.status_code}
         
     except requests.exceptions.RequestException as e:
         print(f"Error dispatching GitHub workflow: {e}")
