@@ -1,0 +1,30 @@
+name: Retrain Model on feedback data using WandB
+on:
+    workflow_dispatch:
+
+jobs:
+    login_wandb:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Set up Python
+              uses: actions/setup-python@v2
+              with:
+                python-version: '3.13'
+                cache: 'pip'
+            - name: Install WandB
+              run: |
+                    python -m pip install --upgrade pip
+                    pip install wandb
+            
+            - name: Login WandB
+              env:
+                WANDB_API_KEY: $WANDB_LOGIN_KEY
+              run: |
+                    wandb login $WANDB_API_KEY
+                    echo "Logged into WandB"
+            
+        
+              
