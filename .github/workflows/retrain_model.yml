@@ -20,8 +20,9 @@ jobs:
             
             - name: Login WandB
               env:
-                WANDB_API_KEY: $WANDB_LOGIN_KEY
+                WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
               run: |
+                    echo $WANDB_API_KEY
                     wandb login $WANDB_API_KEY
                     echo "Logged into WandB"
             
