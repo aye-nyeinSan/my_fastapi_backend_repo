@@ -53,7 +53,6 @@ jobs:
                 WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
               run: |
                     papermill "notebooks/ExploreWeights&Biases.ipynb" \
-                     "notebooks/retrained_sentiment_model.ipynb" \
                      --log-output \
                      --kernel python3 
             
