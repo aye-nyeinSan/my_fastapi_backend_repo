@@ -1,2 +1,2 @@
 from sqlalchemy import Boolean,Column,ForeignKey,Integer,String
-from 
+from db import Base
