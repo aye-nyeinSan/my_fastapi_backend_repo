@@ -8,3 +8,6 @@ pandas
 scikit-learn
 torch
 joblib
+uvicorn
+sqlalchemy
+psycopg2-binary 
