@@ -3,6 +3,5 @@ from core.db import Base
 
 class Testing(Base):
     __tablename__='testing'
-
     id=Column(Integer,primary_key=True,index=True)
     title=Column(String,index=True)
