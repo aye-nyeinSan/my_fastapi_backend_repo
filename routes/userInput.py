@@ -11,7 +11,7 @@ router = APIRouter()
 
 class UserInputRequest(BaseModel):
     text: str = ""
-    uploadedFiles: Optional[List[str]] = []
+    uploadedFiles: Optional[List[str]] = Field(default_factory=list)
 
 
 class SentimentResult(BaseModel):
