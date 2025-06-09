@@ -3,7 +3,7 @@ import os
 import io  
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from fastapi import APIRouter, HTTPException
 from starlette import status
 router = APIRouter()
