@@ -47,7 +47,6 @@ jobs:
          
             
           - name: Install dependencies
-            if: ${{ steps.pip-cache.outputs.cache-hit != 'true' }}  
             run: |
                   python -m pip install --upgrade pip
                   pip install -r requirements.txt
@@ -59,6 +58,7 @@ jobs:
             run: |
                 wandb login $WANDB_API_KEY
                 echo "Logged into WandB"
+                
           - name: Retrain model
             env:
                 WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
