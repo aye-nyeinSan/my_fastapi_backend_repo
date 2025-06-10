@@ -28,7 +28,7 @@ async def retrain_model():
         response = requests.post(
             url,
             headers=headers,
-            json={"ref": "cacheActions"}
+            json={"ref": "main"}
         )
         response.raise_for_status()
         
