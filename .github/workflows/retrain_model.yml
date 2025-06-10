@@ -82,6 +82,17 @@ jobs:
                 path: ${{env.PIP_CACHE_DIR}}
                 key: ${{ steps.cache_key.outputs.CACHE_KEY }}
 
+             - name: check WandB install inside cache or not 
+               run: |
+                      echo "Checking if WandB is installed..."
+
+
+                      if ! python -c "import wandb" &> /dev/null; then
+                          echo "WandB is not installed, installing..."
+                      else
+                          echo "WandB is already installed."
+                      fi
+
              - name: Login WandB
                env:
                  WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
