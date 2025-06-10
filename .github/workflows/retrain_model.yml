@@ -81,6 +81,11 @@ jobs:
                with:
                 path: ${{env.PIP_CACHE_DIR}}
                 key: ${{ steps.cache_key.outputs.CACHE_KEY }}
+                
+             - name: Install dependencies for Login WandB
+               run: |
+                 python -m pip install --upgrade pip
+                 pip install -r requirements.txt
 
              - name: check WandB install inside cache or not 
                run: |
@@ -88,7 +93,7 @@ jobs:
 
 
                       if ! python -c "import wandb" &> /dev/null; then
-                          echo "WandB is not installed, installing..."
+                          echo "WandB is not installed"
                       else
                           echo "WandB is already installed."
                       fi
