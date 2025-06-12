@@ -9,6 +9,7 @@ from routes import retrain,auth
 
 models.Base.metadata.create_all(bind=engine)
 
+load_dotenv()
 app = FastAPI()
 origins = [
     "http://localhost:5173",
