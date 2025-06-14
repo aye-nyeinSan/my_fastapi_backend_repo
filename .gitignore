@@ -3,3 +3,4 @@ __pycache__
 /fastapibackend/*
 .env
 .env.example
+install-guides.txt

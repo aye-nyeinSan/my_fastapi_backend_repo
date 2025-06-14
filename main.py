@@ -7,6 +7,7 @@ from core.db import engine
 import models
 from routes import retrain,auth,userInput
 
+
 models.Base.metadata.create_all(bind=engine)
 
 load_dotenv()
@@ -16,6 +17,7 @@ origins = [
     "https://127.0.0.1:5173",
     "http://localhost"
 ]
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -23,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+models.Base.metadata.create_all(bind=engine)
 
 app.include_router(retrain.router)
 app.include_router(auth.router)
