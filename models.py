@@ -6,6 +6,7 @@ class Testing(Base):
     id=Column(Integer,primary_key=True,index=True)
     title=Column(String,index=True)
 
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -17,3 +18,4 @@ class User(Base):
     updated_at=Column(DateTime(timezone=True),onupdate=func.now())
     reset_token=Column(String,nullable=True)
     reset_token_expiration=Column(DateTime,nullable=True)
+

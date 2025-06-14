@@ -5,8 +5,13 @@ from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 from core.db import engine
 import models
-from routes import retrain,auth
+from routes import retrain,auth,userInput
 
+
+models.Base.metadata.create_all(bind=engine)
+
+load_dotenv()
+app = FastAPI()
 origins = [
     "http://localhost:5173",
     "https://127.0.0.1:5173",
@@ -24,6 +29,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app.include_router(retrain.router)
 app.include_router(auth.router)
+app.include_router(userInput.router)
 
 
     
