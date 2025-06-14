@@ -1,13 +1,7 @@
 fastapi[standard]
 python-dotenv
 requests
-wandb
-papermill
-ipykernel
-pandas
-scikit-learn
-torch
-joblib
 uvicorn
 sqlalchemy
 psycopg2-binary 
+pydantic
