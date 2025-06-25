@@ -111,4 +111,4 @@ def google_login(token_data:GoogleToken,db:Session=Depends(get_db)):
     access_token=generate_token({"sub":user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
