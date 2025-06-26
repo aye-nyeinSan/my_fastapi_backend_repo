@@ -28,12 +28,13 @@ DATABASE_URL_ASYNC= POSTGRES_URL_NON_POOLING_ASYNC
 
 
 #Async database engine setup
-async_engine = create_async_engine(DATABASE_URL_ASYNC, echo=True)
-AsyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession)
+engine = create_async_engine(DATABASE_URL_ASYNC, echo=True)
+AsyncSessionLocal = sessionmaker(autocommit=False, autoflush=False,
+                                 bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 # Synchronous database engine setup
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# engine = create_engine(DATABASE_URL)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 Base=declarative_base()

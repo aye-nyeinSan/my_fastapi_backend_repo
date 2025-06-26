@@ -2,40 +2,21 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from schemas.schemas import *
 from sqlalchemy.orm import Session
-from core.db import SessionLocal
+from core.db import AsyncSessionLocal
 from models import Testing,User
 from utils.auth import *
 from typing import List
 import requests
+from core.db import db_dependency
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 router=APIRouter()
 
-
-# DB Session dependency
-def get_db():
-   db=SessionLocal()
-   try:
-      yield db
-   finally:
-      db.close()
-
 # Post endpoint
-@router.post("/testing/",response_model=TestingResponse)
-async def create_testing(test:TestingBase, db:Session=Depends(get_db)):
-   db_test= Testing(title=test.title)
-   db.add(db_test)
-   db.commit()
-   db.refresh(db_test)
-   return db_test
-
-# Get endpoint
-@router.get("/testing/",response_model=List[TestingResponse])
-async def get_testing(db:Session=Depends(get_db)):
-   return db.query(Testing).all()
-
 @router.post('/register',response_model=ShowUsers)
-def register(user:UserCreate,db:Session=Depends(get_db)):
-    existing_user=db.query(User).filter(User.email == user.email).first()
+async def register(user:UserCreate,db: db_dependency):
+    existing_user= await db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400,detail="Email already exists")
     
@@ -46,25 +27,28 @@ def register(user:UserCreate,db:Session=Depends(get_db)):
         
     )
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    await db.commit()
+    await db.refresh(new_user)
     return new_user
 
 @router.post("/login")
-def login(user:UserLogin,db:Session=Depends(get_db)):
-    db_user=db.query(User).filter(User.email==user.email).first()
+async def login(db: db_dependency,user: UserLogin):
+    result = await db.execute(select(User).filter(User.email == user.email))
+    db_user = result.scalar_one_or_none()
+    print(F"Db_user: {db_user}")
     if not db_user or not verify_password(user.password,db_user.password):
         raise HTTPException(status_code=401,detail="Invalid Email or password")
     access_token=generate_token(
-        data={"sub":db_user.email}
+        data={"sub":db_user.email,"id": db_user.id}
     ) 
     return {"access_token":access_token,"token_type":"bearer"}
 
 
 @router.post("/token")
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == form_data.username).first()
-    print(f"<<<<< DBUser : {db_user.id}")
+async def login_for_access_token(db: db_dependency,form_data: OAuth2PasswordRequestForm = Depends()):
+    result = await db.execute(select(User).filter(User.email == form_data.username))
+    db_user = result.scalar_one_or_none
+
     if not db_user or not verify_password(form_data.password, db_user.password):
         raise HTTPException(
             status_code=401, detail="Invalid email or password")
@@ -75,17 +59,22 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
 @router.get("/profile",response_model=ShowUsers)
 async def get_profile(
+    db: db_dependency,
     user:TokenData=Depends(get_current_user),
-    db:Session=Depends(get_db)
+    
 ):
-    user=db.query(User).filter(User.email==user.username).first()
+    result = await db.execute(select(User).filter(User.email == user.username))
+    user = result.scalar_one_or_none() # Use scalar_one_or_none()
+  
     if not user:
         raise HTTPException(status_code=404,detail="User not found")
     return user
 
 @router.post("/forgot-password")
-def forgot_password(user:ResetPasswordRequest,db:Session=Depends(get_db)):
-     db_user=db.query(User).filter(User.email==user.email).first()
+async def forgot_password(db: db_dependency,user: ResetPasswordRequest):
+     result = await db.execute(select(User).filter(User.email == user.email))
+     db_user = result.scalar_one_or_none()
+   
      if not db_user:
          raise HTTPException(status_code=404,detail="Email not found")
      reset_token=generate_token(data={"sub":db_user.email})
@@ -97,8 +86,10 @@ def forgot_password(user:ResetPasswordRequest,db:Session=Depends(get_db)):
      }
 
 @router.post("/reset-password")
-def reset_password(data: ResetPasswordConfirm,db:Session=Depends(get_db)):
-    db_user=db.query(User).filter(User.email==data.email).first()
+async def reset_password(db :db_dependency,data: ResetPasswordConfirm):
+    result = await db.execute(select(User).filter(User.email == data.email))
+    db_user = result.scalar_one_or_none()
+   
     if not db_user:
         raise HTTPException(status_code=404,detail="User not found")
     db_user.password=hash_password(data.new_password)
@@ -106,21 +97,23 @@ def reset_password(data: ResetPasswordConfirm,db:Session=Depends(get_db)):
     return {"message":"Password has been reset successfully"}
     
 @router.post("/google-auth")
-def google_login(token_data:GoogleToken,db:Session=Depends(get_db)):
+async def google_login(db: db_dependency,token_data: GoogleToken):
     id_token= token_data.id_token
     try:
-        google_resp = requests.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}").json()
+        google_resp = await requests.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}").json()
         if "email" not in google_resp:
             raise HTTPException(status_code=400, detail="Invalid Google token")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Google token verification failed: {str(e)}")
-
-    user=db.query(User).filter(User.email==google_resp["email"]).first()
+    
+    result = await db.execute(select(User).filter(User.email == google_resp["email"]))
+    user = result.scalar_one_or_none()
+   
     if not user:
         user= User(username=google_resp.get("name","googleuser"),email=google_resp["email"])
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        await db.add(user)
+        await db.commit()
+        await db.refresh(user)
     access_token=generate_token({"sub":user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 

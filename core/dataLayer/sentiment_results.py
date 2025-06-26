@@ -17,7 +17,8 @@ async def insert_sentiment_results(
     new_result = sentiment_resultDB(
         user_id=user_id,
         input_text=sentiment_data.text,
-        sentiment=sentiment_types.POSITIVE,
+        sentiment=sentiment_enum,
+        # sentiment=sentiment_types.POSITIVE,
         confidence_score=sentiment_data.confidence
     )
 

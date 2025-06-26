@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException,Depends
 from core.dataLayer.sentiment_results import insert_sentiment_results
 from core.db import db_dependency
 from utils.auth import get_current_user
-from models import User
+from schemas.schemas import TokenData
 
 router = APIRouter()
 
@@ -27,10 +27,11 @@ async def perform_sentiment_analysis(text: str):
 
 
 @router.post("/userinput", status_code=status.HTTP_201_CREATED,response_model=OverAllSentimentResult )
-async def submit_user_input(input_data: UserInputRequest,db: db_dependency, current_user: User = Depends(get_current_user)):
+async def submit_user_input(input_data: UserInputRequest,db: db_dependency, current_user:Optional[TokenData] = Depends(get_current_user)):
     """
     Endpoint to handle user input.
     """
+    print(f"Current User: {current_user}")
     if input_data.text:
         # perform the sentiment analysis process with input_data.text
 
@@ -70,14 +71,13 @@ async def submit_user_input(input_data: UserInputRequest,db: db_dependency, curr
                     )
                     
                     result.append(sentiment_result)
-                    for sentiment_result in result:
-                        # Insert the sentiment result into the database
-                        await insert_sentiment_results(db,sentiment_result,current_user.id)
-                    
-                    
-                   
+                      
                 else:
                     print("Skipping empty row in CSV.")
+            for sentiment_result in result:
+                # Insert the sentiment result into the database
+                await insert_sentiment_results(db, sentiment_result, current_user.id)
+                
         return {
             "message": "Files processed",
             "results": result
