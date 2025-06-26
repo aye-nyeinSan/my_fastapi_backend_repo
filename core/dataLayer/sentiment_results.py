@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 async def insert_sentiment_results(
     db: AsyncSession,
     sentiment_data: SentimentResult,
-    user_id: int = 1
+    user_id: int 
 ):
     """
     Function to insert sentiment results into the database.

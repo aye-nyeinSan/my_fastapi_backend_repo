@@ -8,9 +8,11 @@ from LLMmodels.deploy_model_20250615_133439 import predict_sentiment
 from pydantic import BaseModel, Field
 from starlette import status
 from schemas.schemas import UserInputRequest, SentimentResult, Probabilities, OverAllSentimentResult
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Depends
 from core.dataLayer.sentiment_results import insert_sentiment_results
 from core.db import db_dependency
+from utils.auth import get_current_user
+from models import User
 
 router = APIRouter()
 
@@ -25,7 +27,7 @@ async def perform_sentiment_analysis(text: str):
 
 
 @router.post("/userinput", status_code=status.HTTP_201_CREATED,response_model=OverAllSentimentResult )
-async def submit_user_input(input_data: UserInputRequest,db: db_dependency):
+async def submit_user_input(input_data: UserInputRequest,db: db_dependency, current_user: User = Depends(get_current_user)):
     """
     Endpoint to handle user input.
     """
@@ -70,7 +72,7 @@ async def submit_user_input(input_data: UserInputRequest,db: db_dependency):
                     result.append(sentiment_result)
                     for sentiment_result in result:
                         # Insert the sentiment result into the database
-                        await insert_sentiment_results(db,sentiment_result,user_id=1)
+                        await insert_sentiment_results(db,sentiment_result,current_user.id)
                     
                     
                    

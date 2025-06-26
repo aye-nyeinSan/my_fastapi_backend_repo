@@ -22,7 +22,7 @@ except ValueError:
 # password hashing context
 pwd_context= CryptContext(schemes=['bcrypt'],deprecated='auto')
 # OAuth2 scheme
-oauth2_scheme= OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme= OAuth2PasswordBearer(tokenUrl="token")
 
 def hash_password(password:str)->str:
     return pwd_context.hash(password)
@@ -36,6 +36,7 @@ def generate_token(data:dict):
     expire= datetime.utcnow()+ timedelta(minutes=int(ACCESS_TOKEN_EXPIRED_MINUTES))
     to_encode.update({"exp":expire})
     encoded_jwt= jwt.encode(to_encode,SECRET_KEY,algorithm=ALGORITHM)
+    print(f"Generated JWT: {encoded_jwt}")
     return encoded_jwt
 
 
@@ -50,9 +51,10 @@ def get_current_user(token:str=Depends(oauth2_scheme))->TokenData:
     try:
         payload= jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
         email:str= payload.get('sub')
+        user_id: int = payload.get("id")
         if email is None:
             raise credentials_exception
-        return TokenData(username=email)
+        return TokenData(username=email, id=user_id)
     except JWTError:
         raise credentials_exception
 
