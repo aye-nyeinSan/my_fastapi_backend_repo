@@ -1,16 +1,19 @@
+import os
+from pathlib import Path
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,Depends
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 from core.db import engine
+from sqlalchemy.orm import Session
 import models
 from routes import retrain,auth,userInput
+from typing import Annotated
 
+load_dotenv(dotenv_path=Path(
+    __file__).resolve().parent / ".env", override=True)
 
-models.Base.metadata.create_all(bind=engine)
-
-load_dotenv()
 app = FastAPI()
 origins = [
     "http://localhost:5173",
