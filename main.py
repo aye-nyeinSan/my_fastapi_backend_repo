@@ -1,23 +1,31 @@
 
+import os
+from pathlib import Path
+
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,Depends
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from core.db import engine
+from core.db import engine,Base
+from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncEngine
 import models
-from routes import retrain,auth,userInput,apikeys_management
+
+from routes import retrain,auth,userInput,predict,apikeys_management
+from typing import Annotated
 
 
-models.Base.metadata.create_all(bind=engine)
+load_dotenv(dotenv_path=Path(
+    __file__).resolve().parent / ".env", override=True)
 
-load_dotenv()
+
 app = FastAPI()
+
 origins = [
     "http://localhost:5173",
     "https://127.0.0.1:5173",
     "http://localhost"
 ]
-app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -25,19 +33,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-models.Base.metadata.create_all(bind=engine)
 
-app.include_router(retrain.router)
+
+# Routers
 app.include_router(auth.router)
+app.include_router(predict.router)
+app.include_router(retrain.router)
 app.include_router(userInput.router)
 app.include_router(apikeys_management.router)
 
 
-    
-    
+
+@app.on_event("startup")
+async def startup_event():
+    print("Application startup: Initializing database...")
+    try:
+         async with engine.begin() as conn:
+             await conn.run_sync(Base.metadata.create_all)
+    finally:
+        await conn.close()  # Ensure the connection is closed after use
+    print("Application startup: Database tables created (or already exist).")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("Application shutdown: Disposing database engine...")
+    await engine.dispose()  # Properly closes all pooled connections
+    print("Application shutdown: Database engine disposed.")
+
     
         
         
    
 
-   
+
