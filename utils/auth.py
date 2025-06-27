@@ -22,7 +22,7 @@ except ValueError:
 # password hashing context
 pwd_context= CryptContext(schemes=['bcrypt'],deprecated='auto')
 # OAuth2 scheme
-oauth2_scheme= OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme= OAuth2PasswordBearer(tokenUrl="/login")
 
 def hash_password(password:str)->str:
     return pwd_context.hash(password)
@@ -41,6 +41,7 @@ def generate_token(data:dict):
 
 
 def get_current_user(token:str=Depends(oauth2_scheme))->TokenData:
+    print(f"Token received in get_current_user: {token[:30]}...")
     credentials_exception= HTTPException(
         status_code=401,
         detail="Invalid auth credentials",
@@ -49,11 +50,16 @@ def get_current_user(token:str=Depends(oauth2_scheme))->TokenData:
     )
     try:
         payload= jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+        print(f"JWT Payload: {payload}")
         email:str= payload.get('sub')
+        user_id: int = payload.get("id")
         if email is None:
             raise credentials_exception
-        return TokenData(username=email)
-    except JWTError:
+        return TokenData(username=email, id=user_id)
+    except JWTError as e:
+        print(f"JWT Error during decode: {e}")
         raise credentials_exception
-
+    except Exception as e:
+        print(f"Unexpected error in get_current_user: {e}")
+        raise credentials_exception
 
