@@ -1,3 +1,4 @@
+
 import enum
 from sqlalchemy import Column,ForeignKey,Integer,String,DateTime,Text,func,Float
 from core.db import Base
@@ -22,6 +23,7 @@ class User(Base):
     reset_token=Column(String,nullable=True)
     reset_token_expiration=Column(DateTime,nullable=True)
 
+
 class sentiment_types(enum.Enum):
     POSITIVE = "positive"
     NEGATIVE = "negative"
@@ -38,3 +40,4 @@ class sentiment_result(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     
+

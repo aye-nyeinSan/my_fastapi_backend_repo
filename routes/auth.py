@@ -39,8 +39,13 @@ async def login(db: db_dependency,user: UserLogin):
     if not db_user or not verify_password(user.password,db_user.password):
         raise HTTPException(status_code=401,detail="Invalid Email or password")
     access_token=generate_token(
-        data={"sub":db_user.email,"id": db_user.id}
-    ) 
+
+        data={
+            "sub":db_user.email,
+            "user_id":db_user.id
+            },
+    )
+
     return {"access_token":access_token,"token_type":"bearer"}
 
 
@@ -110,11 +115,15 @@ async def google_login(db: db_dependency,token_data: GoogleToken):
     user = result.scalar_one_or_none()
    
     if not user:
-        user= User(username=google_resp.get("name","googleuser"),email=google_resp["email"])
+        user= User(username=google_resp.get("name","googleuser"),email=google_resp["email"],password="dummy")
         db.add(user)
-        await db.commit()
-        await db.refresh(user)
-    access_token=generate_token({"sub":user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+        db.commit()
+        db.refresh(user)
+    access_token=generate_token({"sub":user.email,"user_id":user.id})
+    return {
+        "access_token": access_token,
+        "user": {"username": user.username, "email": user.email},
+        "token_type": "bearer"}
+
 
 

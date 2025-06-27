@@ -1,3 +1,4 @@
+
 import os
 from pathlib import Path
 
@@ -9,19 +10,21 @@ from core.db import engine,Base
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncEngine
 import models
-from routes import retrain,auth,userInput
+from routes import retrain,auth,userInput,predict
 from typing import Annotated
+
 
 load_dotenv(dotenv_path=Path(
     __file__).resolve().parent / ".env", override=True)
 
+
 app = FastAPI()
+
 origins = [
     "http://localhost:5173",
     "https://127.0.0.1:5173",
     "http://localhost"
 ]
-app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -29,11 +32,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# models.Base.metadata.create_all(bind=engine)
 
-app.include_router(retrain.router)
+
+# DB table creation
+models.Base.metadata.create_all(bind=engine)
+
+# Routers
 app.include_router(auth.router)
+app.include_router(predict.router)
+app.include_router(retrain.router)
 app.include_router(userInput.router)
+
 
 
 @app.on_event("startup")
@@ -52,9 +61,10 @@ async def shutdown_event():
     print("Application shutdown: Disposing database engine...")
     await engine.dispose()  # Properly closes all pooled connections
     print("Application shutdown: Database engine disposed.")
+
     
         
         
    
 
-   
+
