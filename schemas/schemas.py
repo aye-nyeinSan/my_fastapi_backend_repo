@@ -66,7 +66,18 @@ class OverAllSentimentResult(BaseModel):
     message: str
     results: List[SentimentResult]
 
+class DBSentimentResult(BaseModel):
+    text:str
+    sentiment: str
+    confidence : float
+    user_id : Optional[int]
+    
 
+class DBSentimentResultReponse(BaseModel):
+    message: str
+    results: List[DBSentimentResult]
+
+    
 class UserInputRequest(BaseModel):
     text: str = ""
     uploadedFiles: Optional[List[str]] = Field(default_factory=list)

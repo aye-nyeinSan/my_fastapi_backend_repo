@@ -3,6 +3,7 @@ from models import sentiment_result as sentiment_resultDB#DB_table
 from schemas.schemas import SentimentResult #Response_Schema
 from models import sentiment_types
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 async def insert_sentiment_results(
     db: AsyncSession,
@@ -26,3 +27,17 @@ async def insert_sentiment_results(
     await db.commit()
     await db.refresh(new_result)
     return new_result
+
+
+async def get_all_sentiment_results(db: AsyncSession, user_id:int):
+    """
+    Function to get all sentiment results from the database.
+    """
+    query = select(sentiment_resultDB).where(
+        sentiment_resultDB.user_id == user_id)
+    result = await db.execute(query)
+    # Fetch all results from the query (scalars will return the ORM objects)
+    sentiment_records = result.scalars().all()
+    
+    return sentiment_records
+    

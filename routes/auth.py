@@ -111,7 +111,7 @@ async def google_login(db: db_dependency,token_data: GoogleToken):
    
     if not user:
         user= User(username=google_resp.get("name","googleuser"),email=google_resp["email"])
-        await db.add(user)
+        db.add(user)
         await db.commit()
         await db.refresh(user)
     access_token=generate_token({"sub":user.email})
