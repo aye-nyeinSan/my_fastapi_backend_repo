@@ -35,7 +35,9 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
-    id: Optional[int] = None
+    user_id:Optional[int]=None
+
+
 
 class ResetPasswordRequest(BaseModel):
     email: EmailStr
@@ -46,6 +48,15 @@ class ResetPasswordConfirm(BaseModel):
 
 class GoogleToken(BaseModel):
     id_token:str
+
+
+class PredictRequest(BaseModel):
+    text:str
+
+class PredictResponse(BaseModel):
+    text:str
+    sentiment:str
+    confidence:float | None
 
 
 class Probabilities(BaseModel):
@@ -81,3 +92,4 @@ class DBSentimentResultReponse(BaseModel):
 class UserInputRequest(BaseModel):
     text: str = ""
     uploadedFiles: Optional[List[str]] = Field(default_factory=list)
+
