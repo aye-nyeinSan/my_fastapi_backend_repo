@@ -24,6 +24,24 @@ class User(Base):
     reset_token_expiration=Column(DateTime,nullable=True)
 
 
+
+class account_status_types(enum.Enum):
+    active = 'ACTIVE'
+    revoke = 'REVOKE'
+    
+
+class APIKeys(Base):
+    __tablename__ = 'api_keys'
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    keyname = Column(Text, unique=True, nullable=False)
+    account_status = Column(SQLEnum(account_status_types, name="account_status"))
+    public_key = Column(Text,unique=True)
+    hashkey= Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    lastused_at = Column(DateTime(timezone=True), onupdate=func.now())
+
 class sentiment_types(enum.Enum):
     POSITIVE = "positive"
     NEGATIVE = "negative"

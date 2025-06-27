@@ -50,6 +50,12 @@ class GoogleToken(BaseModel):
     id_token:str
 
 
+class Api_Key(BaseModel):
+    key_name : str
+    public_key: str
+    hashkey :str
+
+
 class PredictRequest(BaseModel):
     text:str
 
@@ -92,4 +98,5 @@ class DBSentimentResultReponse(BaseModel):
 class UserInputRequest(BaseModel):
     text: str = ""
     uploadedFiles: Optional[List[str]] = Field(default_factory=list)
+
 

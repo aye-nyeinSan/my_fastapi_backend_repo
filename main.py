@@ -10,7 +10,8 @@ from core.db import engine,Base
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncEngine
 import models
-from routes import retrain,auth,userInput,predict
+
+from routes import retrain,auth,userInput,predict,apikeys_management
 from typing import Annotated
 
 
@@ -39,6 +40,7 @@ app.include_router(auth.router)
 app.include_router(predict.router)
 app.include_router(retrain.router)
 app.include_router(userInput.router)
+app.include_router(apikeys_management.router)
 
 
 
