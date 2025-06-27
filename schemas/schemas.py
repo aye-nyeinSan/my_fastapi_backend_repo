@@ -45,4 +45,8 @@ class ResetPasswordConfirm(BaseModel):
 
 class GoogleToken(BaseModel):
     id_token:str
-    
+
+class Api_Key(BaseModel):
+    key_name : str
+    public_key: str
+    hashkey :str
