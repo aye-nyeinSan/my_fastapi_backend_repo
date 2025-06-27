@@ -1,23 +1,18 @@
 from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy.orm import Session
 from schemas.schemas import *
-from models import SentimentRequests
+from models import sentiment_result
 from utils.auth import get_current_user,get_current_user_optional
-from core.db import SessionLocal
+from core.db import AsyncSessionLocal,db_dependency
 from typing import List,Optional
 import joblib,os
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
 
 router= APIRouter()
 model_path = os.path.join(os.path.dirname(__file__), '..', 'LLMmodels', 'best_model_logistic_regression_bow_20250615_133524.pkl')
 
-# DB Session dependency
-def get_db():
-   db=SessionLocal()
-   try:
-      yield db
-   finally:
-      db.close()
-      
 
 
 try:
@@ -28,9 +23,9 @@ except Exception as e:
     print(f"❌ Failed to load model: {e}")
 
 @router.post("/predict",response_model=PredictResponse)
-def predict_sentiment(
+async def predict_sentiment(
     req:PredictRequest,
-    db:Session=Depends(get_db),
+    db:db_dependency,
     current_user: Optional[TokenData] = Depends(get_current_user_optional)
 ):
     if model is None:
@@ -46,7 +41,7 @@ def predict_sentiment(
     
     # save to DB
     if current_user:
-        sentiment_request=SentimentRequests(
+        sentiment_request = sentiment_result(
             user_id=current_user.user_id,
             input_text=text,
             sentiment=label,
@@ -65,23 +60,23 @@ def predict_sentiment(
 
 
 @router.get("/sentiments", response_model=List[PredictResponse])
-def get_sentiments(
-    db: Session = Depends(get_db),
+async def get_sentiments(
+    db: db_dependency,
     current_user = Depends(get_current_user)
 ):
-    results = (
-        db.query(SentimentRequests)
-        .filter(SentimentRequests.user_id == current_user.user_id)
-        .order_by(SentimentRequests.created_at.desc())
-        .all()
+    stmt = (
+        select(sentiment_result)
+        .where(sentiment_result.user_id == current_user.user_id)
+        .order_by(sentiment_result.created_at.desc())
     )
+    result = await db.scalars(stmt)
+    rows = result.all()
 
     return [
         PredictResponse(
             text=item.input_text,
             sentiment=item.sentiment,
             confidence=item.confidence_score,
-           
         )
-        for item in results
+        for item in rows
     ]

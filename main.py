@@ -34,9 +34,6 @@ app.add_middleware(
 )
 
 
-# DB table creation
-models.Base.metadata.create_all(bind=engine)
-
 # Routers
 app.include_router(auth.router)
 app.include_router(predict.router)
