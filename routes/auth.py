@@ -47,7 +47,7 @@ async def login(db: db_dependency,user: UserLogin):
 @router.post("/token")
 async def login_for_access_token(db: db_dependency,form_data: OAuth2PasswordRequestForm = Depends()):
     result = await db.execute(select(User).filter(User.email == form_data.username))
-    db_user = result.scalar_one_or_none
+    db_user = result.scalar_one_or_none()
 
     if not db_user or not verify_password(form_data.password, db_user.password):
         raise HTTPException(
