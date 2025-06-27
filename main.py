@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 from core.db import engine
 import models
-from routes import retrain,auth,userInput
+from routes import retrain,auth,userInput,apikeys_management
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -30,6 +30,7 @@ models.Base.metadata.create_all(bind=engine)
 app.include_router(retrain.router)
 app.include_router(auth.router)
 app.include_router(userInput.router)
+app.include_router(apikeys_management.router)
 
 
     
