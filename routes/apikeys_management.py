@@ -28,7 +28,6 @@ async def create_api_key(request: Request, db: db_dependency, current_user: Opti
 
     # validate if key_name has already existed for current user
     existing_key = await check_if_key_exists(db, current_user.user_id, data.get("key_name").strip())
-    print(f">>> Existing Key from DB: {existing_key}")
 
     if existing_key:
         raise HTTPException(
@@ -83,7 +82,7 @@ async def delete_api_key_request(request: Request, db: db_dependency, current_us
         return {"message": "API key not found."}
 
 
-@router.get("/api_key", status_code=status.HTTP_200_OK, response_model=List[Api_KeyDBResponse])
+@router.get("/api_key", status_code=status.HTTP_200_OK,)
 async def get_api_key(db: db_dependency, current_user: Optional[TokenData] = Depends(get_current_user)):
 
     # get from DB table
