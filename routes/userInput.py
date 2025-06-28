@@ -66,7 +66,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
 
         # perform the sentiment analysis process with input_data.text
         sentiment_result = await process_text_for_sentiment(
-            input_data.text, db, current_user.id
+            input_data.text, db, current_user.user_id
         )
         all_results.append(sentiment_result)
 
@@ -82,7 +82,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
                     text_to_analyze = row_data[0]
 
                     # perform the sentiment analysis process with input_data.uploadedFiles's rowdata
-                    analysis_result = await process_text_for_sentiment(text_to_analyze, db, current_user.id)
+                    analysis_result = await process_text_for_sentiment(text_to_analyze, db, current_user.user_id)
                     all_results.append(analysis_result)
 
     elif not input_data.text and not input_data.uploadedFiles:
@@ -101,7 +101,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
 async def get_user_iput_sentiment_data(db: db_dependency, current_user: Optional[TokenData] = Depends(get_current_user)):
     """ End point to get all sentiment data from user input """
     
-    all_results: List[DBSentimentResult] = await get_all_sentiment_results(db, current_user.id)
+    all_results: List[DBSentimentResult] = await get_all_sentiment_results(db, current_user.user_id)
 
     for result in all_results:
         pydantic_formatted_results: List[DBSentimentResult] = [
