@@ -72,3 +72,23 @@ async def get_api_key_info_from_user(
     ]
     
     return api_key_info
+
+
+async def delete_api_key(db: AsyncSession,
+                         user_id: int,
+                         keyname: str):
+    """
+    Function to delete api key from the database.
+    
+    """
+    query = select(api_key_db).where(api_key_db.user_id == user_id,
+                                     api_key_db.keyname == keyname)
+    result = await db.execute(query)
+    api_key = result.scalar_one_or_none()
+    if api_key:
+        await db.delete(api_key)
+        await db.commit()
+    else:
+        raise ValueError("API key not found.")
+    return api_key
+    
