@@ -53,7 +53,10 @@ async def create_api_key(request: api_key_achema, db: db_dependency, current_use
     return {
         "message": "API Key Created!",
         "data": {
-            "key_name":key_name
+            "key_name":new_key.keyname,
+            "public_key": new_key.public_key,
+            "created_at": new_key.created_at,
+            "lastused_at": new_key.lastused_at,
         }
     }
 
