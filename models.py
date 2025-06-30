@@ -42,6 +42,7 @@ class APIKeys(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     lastused_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+
 class sentiment_types(enum.Enum):
     POSITIVE = "positive"
     NEGATIVE = "negative"

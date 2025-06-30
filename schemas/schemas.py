@@ -66,9 +66,7 @@ class Api_KeyDBResponse(BaseModel):
     lastused_at : datetime
 
   
-    
-
-
+   
 class PredictRequest(BaseModel):
     text:str
 
