@@ -89,6 +89,7 @@ async def delete_api_key_request(request: Request, db: db_dependency, current_us
 @router.get("/api_key", status_code=status.HTTP_200_OK,)
 async def get_api_key(db: db_dependency, current_user: Optional[TokenData] = Depends(get_current_user)):
 
+    print(f">>>> Current user:",current_user)
     # get from DB table
     get_key_info = await get_api_key_info_from_user(db, current_user.user_id)
 
