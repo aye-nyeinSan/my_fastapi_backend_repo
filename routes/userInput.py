@@ -60,7 +60,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
     """
     Endpoint to handle user input.
     """
-    print(f"Current User: {current_user}")
+    print(f">>>Current User: {current_user}")
     user_id = current_user.user_id if current_user else None
     all_results: List[SentimentResult] = []
     if input_data.text:
@@ -86,7 +86,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
 
                     # perform the sentiment analysis process with input_data.uploadedFiles's rowdata
 
-                    analysis_result = await process_text_for_sentiment(text_to_analyze, db, current_user.user_id)
+                    analysis_result = await process_text_for_sentiment(text_to_analyze, db, user_id)
 
                     all_results.append(analysis_result)
 
