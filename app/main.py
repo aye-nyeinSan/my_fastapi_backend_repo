@@ -53,7 +53,7 @@ async def startup_event():
              await conn.run_sync(Base.metadata.create_all)
        # Only run test DB init if in test mode
         if os.getenv("TESTING") == "1":
-            async with test_engine.begin() as test_conn:
+            async with test_engine.connect() as test_conn:
                 await test_conn.run_sync(Base.metadata.create_all)
     finally:
         await conn.close()  # Ensure the connection is closed after use

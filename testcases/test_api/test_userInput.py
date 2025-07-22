@@ -1,15 +1,27 @@
-from app.main import app
-from fastapi.testclient import TestClient
-import sys
+from app.routes.userInput import get_current_user as route_get_current_user
+import inspect
 import os
+import sys
+
+from fastapi.testclient import TestClient
+
+from app.main import app
+from app.routes.userInput import get_current_user_optional
+
 # Add root directory to Python path
-print("System path:",sys.path.append(os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../../../'))))
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../../../')))
+
+class TestUser():
+    user_id = 1
+    username = "test"
+    
+#Helper function to override the current user in tests  
+def override_current_user():
+    return TestUser()
 
 
-
-
-
+app.dependency_overrides[get_current_user_optional] = override_current_user
 
 client = TestClient(app)
 
@@ -22,3 +34,4 @@ def test_post_api_submit_user_input():
     assert response.status_code == 201
     data = response.json()
     assert data["message"] == "Sentiment analysis completed successfully."
+    assert "results" in data and isinstance(data["results"], list)
