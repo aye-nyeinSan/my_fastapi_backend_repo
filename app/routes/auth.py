@@ -6,13 +6,13 @@ from typing import List
 
 import httpx
 
-from schemas.schemas import (
+from app.schemas.schemas import (
     UserCreate, UserLogin, ShowUsers, ResetPasswordRequest,
     ResetPasswordConfirm, GoogleToken, TokenData
 )
-from models import User
-from core.db import db_dependency
-from utils.auth import hash_password, verify_password, generate_token, get_current_user
+from app.models import User
+from app.repository.db import db_dependency
+from app.utils.auth import hash_password, verify_password, generate_token, get_current_user
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 
 import enum
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text, Float, func
-from core.db import Base
+from app.repository.db import Base
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import UniqueConstraint
 
