@@ -24,6 +24,6 @@ First step,
 
 then, start your server running this cmd in terminal.
 ```
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
 ```
 

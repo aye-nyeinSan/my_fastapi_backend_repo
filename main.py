@@ -10,11 +10,9 @@ from core.db import engine,Base
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncEngine
 import models
-import boto3
-from botocore.config import Config
-from settings import AWS_Settings
+from settings import AWS_Settings, s3_client
 
-from routes import retrain,auth,userInput,predict,apikeys_management
+from routes import retrain,auth,userInput,predict,apikeys_management,uploadToS3
 from typing import Annotated
 
 
@@ -22,7 +20,7 @@ load_dotenv(dotenv_path=Path(
     __file__).resolve().parent / ".env", override=True)
 
 
-app = FastAPI()
+app = FastAPI(title="MyanSen Language Processing API",)
 
 origins = [
     "http://localhost:5173",
@@ -37,13 +35,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-s3_client = boto3.client(
-    "s3",
-    region_name=AWS_Settings.AWS_REGION,
-    aws_access_key_id=AWS_Settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_Settings.AWS_SECRET_ACCESS_KEY,
-    config=Config(signature_version="s3v4"),
-)
 
 # Routers
 app.include_router(auth.router)
@@ -51,6 +42,8 @@ app.include_router(predict.router)
 app.include_router(retrain.router)
 app.include_router(userInput.router)
 app.include_router(apikeys_management.router)
+app.include_router(uploadToS3.router, prefix="/api/v1")
+
 
 
 

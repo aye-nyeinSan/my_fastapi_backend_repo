@@ -1,26 +1,42 @@
 from schemas.schemas import AWS_PreSigned_Response, AWS_PreSigned_Request
-from fastapi import APIRouter, HTTPException
-from settings import AWS_Settings
-from main import s3_client
+from fastapi import APIRouter, HTTPException, UploadFile, Depends, File
+from settings import AWS_settings, s3_client
+from uuid import uuid4
+import re  
 
-router = APIRouter()
+def sanitize(filename: str) -> str:
+    """
+    Sanitize the filename by removing unwanted characters.
+    """
+    return re.sub(r'[^a-zA-Z0-9_.-]', '', filename) 
+
+router = APIRouter(prefix="/upload", tags=["upload"])
+
+def get_s3_client():
+    """
+    Dependency to get the S3 client.
+    This can be used in route handlers to access the S3 client.
+    """
+    return s3_client
 
 @router.post("/presigned_url", response_model=AWS_PreSigned_Response)
-async def get_presigned_url(file_name: str, file_type: str):
+async def get_presigned_url(file: UploadFile = File(...),
+                            s3 = Depends(get_s3_client)):
     """
     Generate a pre-signed URL for uploading files to S3.
     """
     try:  
-        bucket_name = AWS_Settings.AWS_S3_BUCKET_NAME
-        key = f"uploads/{file_name}"
+        bucket_name = AWS_settings.AWS_S3_BUCKET_NAME
+        key = f"uploads/{uuid4()}-{sanitize(file.filename)}"
         
-        response = s3_client.generate_presigned_url(
+        response = s3.generate_presigned_url(
             'put_object',
-            Params={'Bucket': bucket_name, 'Key': key, 'ContentType': file_type},
+            Params={'Bucket': bucket_name, 'Key': key, 'ContentType': file.content_type},
             ExpiresIn=3600  # URL expires in 1 hour
         )
-        
+        print(f">>> Generated pre-signed URL: {response}")
         return AWS_PreSigned_Response(url=response, key=key, bucket=bucket_name)
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
