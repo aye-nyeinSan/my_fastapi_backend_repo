@@ -10,6 +10,9 @@ from core.db import engine,Base
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncEngine
 import models
+import boto3
+from botocore.config import Config
+from settings import AWS_Settings
 
 from routes import retrain,auth,userInput,predict,apikeys_management
 from typing import Annotated
@@ -34,6 +37,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+s3_client = boto3.client(
+    "s3",
+    region_name=AWS_Settings.AWS_REGION,
+    aws_access_key_id=AWS_Settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_Settings.AWS_SECRET_ACCESS_KEY,
+    config=Config(signature_version="s3v4"),
+)
 
 # Routers
 app.include_router(auth.router)

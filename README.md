@@ -26,3 +26,4 @@ then, start your server running this cmd in terminal.
 ```
 uvicorn main:app --reload
 ```
+
