@@ -34,7 +34,6 @@ async def get_presigned_url(file: UploadFile = File(...),
             Params={'Bucket': bucket_name, 'Key': key, 'ContentType': file.content_type},
             ExpiresIn=3600  # URL expires in 1 hour
         )
-        print(f">>> Generated pre-signed URL: {response}")
         return AWS_PreSigned_Response(url=response, key=key, bucket=bucket_name)
     
     except Exception as e:
