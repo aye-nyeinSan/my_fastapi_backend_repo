@@ -12,7 +12,8 @@ router= APIRouter()
 async def retrain_model(request:Request):
 
     body = await request.json()
-    data_set_path = body.get('key')
+    dataset_path = body.get('key')
+    # print(f">>>> dataset key: {dataset_path}")
 
     GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
     GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
@@ -25,9 +26,9 @@ async def retrain_model(request:Request):
     
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/actions/workflows/retrain_model.yml/dispatches"
     data = {
-    "ref": "main",
+    "ref": "origin/TriggerFeedback",
     "inputs": {
-        "dataset_s3_path": data_set_path
+        "dataset_path": dataset_path
     }
      }
     
@@ -49,7 +50,7 @@ async def retrain_model(request:Request):
         
         return {"message": "Model retraining started",
             "github_repo": f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}",
-            "inputs":f"{data_set_path}",
+            "inputs":f"{dataset_path}",
             "status_code": response.status_code}
         
     except requests.exceptions.RequestException as e:
