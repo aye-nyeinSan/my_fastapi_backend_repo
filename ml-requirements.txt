@@ -1,5 +1,5 @@
 wandb
-godown
+gdown
 papermill
 ipykernel
 pandas
