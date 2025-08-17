@@ -64,10 +64,10 @@ jobs:
             run: |
                   gdown https://drive.google.com/uc?id=1YxLA_B9yKP5qIINrpmRvY7zg8TqfjZnz -O notebooks/MyanSen_Model_Training.ipynb
                   papermill "notebooks/MyanSen_Model_Training.ipynb" \
-                     "notebooks/retrained_sentiment_model.ipynb" \
-                     -p dataset_path "${{ github.event.inputs.dataset_path }}"\
-                     --log-output \
-                     --kernel python3 
+                  "notebooks/retrained_sentiment_model.ipynb" \
+                  -p dataset_path "${{ github.event.inputs.dataset_path }}"\
+                  --log-output \
+                  --kernel python3 
 
            
             
