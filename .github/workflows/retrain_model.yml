@@ -43,6 +43,9 @@ jobs:
             with:
               path: ${{env.PIP_CACHE_DIR}}
               key: ${{ steps.cache_key.outputs.CACHE_KEY }}
+              restore-keys: |
+                  ${{ runner.os }}-pip-py${{ steps.setup-python.outputs.python-version }}-
+                  ${{ runner.os }}-pip-
          
             
           - name: Install dependencies
@@ -65,7 +68,7 @@ jobs:
                   gdown https://drive.google.com/uc?id=1YxLA_B9yKP5qIINrpmRvY7zg8TqfjZnz -O notebooks/MyanSen_Model_Training.ipynb
                   papermill "notebooks/MyanSen_Model_Training.ipynb" \
                   "notebooks/retrained_sentiment_model.ipynb" \
-                  -r dataset_path "${{ github.event.inputs.dataset_path }}"\
+                  --parameters_raw  dataset_path "${{ github.event.inputs.dataset_path }}"\
                   --log-output \
                   --kernel python3 
 

@@ -1,8 +1,15 @@
 wandb
 gdown
 papermill
+boto3
 ipykernel
 pandas
 scikit-learn
 torch
 joblib
+numpy 
+jupyter 
+tensorflow 
+keras
+icu-tokenizer
+myanmartools
