@@ -27,7 +27,7 @@ async def get_presigned_url(file: UploadFile = File(...),
     """
     try:  
         bucket_name = AWS_settings.AWS_S3_BUCKET_NAME
-        key = f"uploads/{uuid4()}-{sanitize(file.filename)}"
+        key = f"uploads/{sanitize(file.filename)}"
         
         response = s3.generate_presigned_url(
             'put_object',

@@ -1,12 +1,10 @@
 name: Retrain Model on feedback data using WandB
 on:
     workflow_dispatch:
-         # You can add inputs here if you want to pass parameters from your FastAPI app
-    # inputs:
-    #   dataset_path:
-    #     description: 'Path to the dataset for retraining'
-    #     required: false
-    #     default: 'data/feedback.csv'
+      inputs:
+        dataset_path:
+          description: 'Path to the dataset for retraining'
+          required: true  # must provide a value
 
     
 
@@ -65,6 +63,7 @@ jobs:
             run: |
                   papermill "notebooks/ExploreWeights&Biases.ipynb" \
                      "notebooks/retrained_sentiment_model.ipynb" \
+                      -p dataset_path "${{ github.event.inputs.dataset_path }}"
                      --log-output \
                      --kernel python3 
 

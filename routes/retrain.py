@@ -2,14 +2,18 @@ import os
 
 import requests
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 router= APIRouter()
 
 
 
 @router.post("/retrainmodel")
-async def retrain_model():
+async def retrain_model(request:Request):
+
+    body = await request.json()
+    data_set_path = body.get('key')
+
     GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
     GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
     GITHUB_REPO_NAME = os.getenv('GITHUB_REPO_NAME')
@@ -20,6 +24,12 @@ async def retrain_model():
         return { "error": "Github repository is misconfigured"},500
     
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/actions/workflows/retrain_model.yml/dispatches"
+    data = {
+    "ref": "main",
+    "inputs": {
+        "dataset_s3_path": data_set_path
+    }
+     }
     
     headers = { 
     "Accept": "application/vnd.github+json",
@@ -32,13 +42,14 @@ async def retrain_model():
         response = requests.post(
             url,
             headers=headers,
-            json={"ref": "main"},
+            json= data,
             timeout=10  # Set timeout to 10 seconds
         )
         response.raise_for_status()
         
         return {"message": "Model retraining started",
             "github_repo": f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}",
+            "inputs":f"{data_set_path}",
             "status_code": response.status_code}
         
     except requests.exceptions.RequestException as e:
