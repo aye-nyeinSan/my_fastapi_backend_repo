@@ -11,8 +11,6 @@ on:
 jobs:
     
     training_model:
-        outputs: 
-          deps_cache_key : ${{ steps.cache_key.outputs.CACHE_KEY }}
 
         runs-on: ubuntu-latest
         steps: 
@@ -28,10 +26,8 @@ jobs:
             
           - name: Install dependencies
             run: |
-                  echo "PIP cache: $PIP_CACHE_DIR"
                   python -m pip install --upgrade pip
                   pip install -r ml-requirements.txt
-                  du -sh "$PIP_CACHE_DIR" || true
             
   
           - name: Login WandB
@@ -40,6 +36,9 @@ jobs:
             run: |
                 wandb login $WANDB_API_KEY
                 echo "Logged into WandB"
+          - name: Create notebooks directory
+            run: |
+                 mkdir -p notebooks
                 
           - name: Retrain model
             run: |
