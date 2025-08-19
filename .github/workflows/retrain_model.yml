@@ -53,6 +53,11 @@ jobs:
                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                AWS_REGION: ${{ secrets.AWS_REGION }}
                WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
+          - name: Upload Training Logs
+            uses: actions/upload-artifact@v4
+            with:
+              name: training-output
+              path: notebooks/output_files/
 
            
             
