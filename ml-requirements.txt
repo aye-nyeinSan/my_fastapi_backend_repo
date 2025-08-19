@@ -13,3 +13,4 @@ tensorflow
 keras
 icu-tokenizer
 myanmartools
+google-colab
