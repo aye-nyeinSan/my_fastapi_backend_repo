@@ -13,7 +13,7 @@ async def retrain_model(request:Request):
 
     body = await request.json()
     dataset_path = body.get('key')
-    # print(f">>>> dataset key: {dataset_path}")
+    print(f">>>> dataset Path: {dataset_path}")
 
     GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
     GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
@@ -26,7 +26,7 @@ async def retrain_model(request:Request):
     
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/actions/workflows/retrain_model.yml/dispatches"
     data = {
-    "ref": "origin/TriggerFeedback",
+    "ref": "Trigger_feedback_loop",
     "inputs": {
         "dataset_path": dataset_path
     }
@@ -42,9 +42,9 @@ async def retrain_model(request:Request):
     try:
         response = requests.post(
             url,
-            headers=headers,
-            json= data,
-            timeout=10  # Set timeout to 10 seconds
+            headers = headers,
+            json = data,
+            timeout = 10  # Set timeout to 10 seconds
         )
         response.raise_for_status()
         
