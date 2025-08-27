@@ -21,9 +21,16 @@ jobs:
             uses: actions/setup-python@v4
             with:
                 python-version: '3.11'
-                cache: 'pip'
+      
 
-            
+          - name: Cache Dependencies
+            uses: actions/checkout@v4
+            with:
+              path: ~/.cache/pip  
+              key: ${{ runner.os }}-pip-${{ hashFiles('**/ml-requirements.txt') }}  
+           restore-keys: |
+                ${{ runner.os }}-pip-
+
           - name: Install dependencies
             run: |
                   python -m pip install --upgrade pip
@@ -36,6 +43,7 @@ jobs:
             run: |
                 wandb login $WANDB_API_KEY
                 echo "Logged into WandB"
+
           - name: Create notebooks directory
             run: |
                  mkdir -p notebooks
@@ -47,12 +55,14 @@ jobs:
                   "notebooks/retrained_sentiment_model.ipynb" \
                   --parameters  dataset_path "uploads/aye2904gmail.com2025-08-19T014749.086Z29fd8f7f-4c84-4e79-aca9-99aa2c364d88"\
                   --log-output \
-                  --kernel python3 
+                  --kernel python3
+                  ls -l notebooks/
             env:
                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                AWS_REGION: ${{ secrets.AWS_REGION }}
                WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
+
           - name: Upload Training Logs
             uses: actions/upload-artifact@v4
             with:
