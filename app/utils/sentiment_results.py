@@ -1,5 +1,5 @@
-from models import sentiment_result as DBSentimentResult
-from schemas.schemas import DBSentimentResult as SentimentSchemaFromDB
+from app.models import sentiment_result as DBSentimentResult
+from app.schemas.schemas import DBSentimentResult as SentimentSchemaFromDB
 
 
 

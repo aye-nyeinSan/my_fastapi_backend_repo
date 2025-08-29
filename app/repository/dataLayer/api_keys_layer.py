@@ -1,7 +1,7 @@
 
-from models import APIKeys as api_key_db
+from app.models import APIKeys as api_key_db
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
+from app.schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
 from sqlalchemy import select
 from typing import List
 
@@ -26,6 +26,7 @@ async def insert_new_api_key(
     db.add(new_result)
     await db.commit()
     await db.refresh(new_result)
+    
     return new_result
 
 
@@ -40,6 +41,7 @@ async def check_if_key_exists(db: AsyncSession,
                 
                                      )
     existing_key = await db.scalar(query)
+  
     return existing_key
     
 
@@ -60,6 +62,7 @@ async def get_api_key_info_from_user(
     query = select(api_key_db).where(api_key_db.user_id == user_id)
 
     result = await db.execute(query)
+   
     api_key_info = [
         Api_KeyDBResponse(
             keyname=key.keyname,
@@ -88,6 +91,7 @@ async def delete_api_key(db: AsyncSession,
     if api_key:
         await db.delete(api_key)
         await db.commit()
+       
     else:
         raise ValueError("API key not found.")
     return api_key

@@ -1,7 +1,7 @@
 
-from models import sentiment_result as sentiment_resultDB#DB_table
-from schemas.schemas import SentimentResult #Response_Schema
-from models import sentiment_types
+from app.models import sentiment_result as sentiment_resultDB#DB_table
+from app.schemas.schemas import SentimentResult #Response_Schema
+from app.models import sentiment_types
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
