@@ -26,7 +26,7 @@ async def retrain_model(request:Request):
     
     url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/actions/workflows/retrain_model.yml/dispatches"
     data = {
-    "ref": "Trigger_feedback_loop",
+    "ref": "development",#Change the target branch to be work on
     "inputs": {
         "dataset_path": dataset_path
     }
