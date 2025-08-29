@@ -24,10 +24,13 @@ First step,
 
 then, start your server running this cmd in terminal.
 ```
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
+
 ```
 
 # Testing 
 ```
 TESTING=1 PYTHONPATH=. pytest -s
+
 ```
+

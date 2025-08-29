@@ -108,3 +108,13 @@ class UserInputRequest(BaseModel):
     uploadedFiles: Optional[List[str]] = Field(default_factory=list)
 
 
+class AWS_PreSigned_Response(BaseModel):
+    url: str
+    key: str
+    bucket: str
+
+
+class AWS_PreSigned_Request(BaseModel):
+    filename: str
+    filetype: str
+ 

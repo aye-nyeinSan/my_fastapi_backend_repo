@@ -1,4 +1,3 @@
-from app.routes.userInput import get_current_user as route_get_current_user
 import inspect
 import os
 import sys
@@ -6,6 +5,7 @@ import sys
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.routes.userInput import get_current_user as route_get_current_user
 from app.routes.userInput import get_current_user_optional
 
 # Add root directory to Python path

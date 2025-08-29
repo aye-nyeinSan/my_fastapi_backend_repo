@@ -10,9 +10,9 @@ from app.repository.db import test_engine,engine,Base
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import AsyncEngine
-import app.models
 
-from app.routes import retrain,auth,userInput,predict,apikeys_management
+from app.settings import AWS_Settings, s3_client
+from app.routes import retrain,auth,userInput,predict,apikeys_management,uploadToS3
 from typing import Annotated
 
 
@@ -20,8 +20,7 @@ load_dotenv(dotenv_path=Path(
     __file__).resolve().parent / ".env", override=True)
 
 
-load_dotenv()
-app = FastAPI()
+app = FastAPI(title="MyanSen Language Processing API",)
 
 origins = [
     "http://localhost:5173",
@@ -43,6 +42,8 @@ app.include_router(predict.router)
 app.include_router(retrain.router)
 app.include_router(userInput.router)
 app.include_router(apikeys_management.router)
+app.include_router(uploadToS3.router, prefix="/api/v1")
+
 
 
 
@@ -65,7 +66,8 @@ async def startup_event():
 async def shutdown_event():
     print("Application shutdown: Disposing database engine...")
     await engine.dispose()
-    await test_engine.dispose()# Properly closes all pooled connections
+    if test_engine:
+        test_engine.dispose()# Properly closes all pooled connections
     print("Application shutdown: Database engine disposed.")
 
     
