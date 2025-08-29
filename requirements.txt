@@ -12,3 +12,6 @@ pydantic
 asyncpg
 greenlet
 httpx
+pydantic_settings
+boto3
+joblib
