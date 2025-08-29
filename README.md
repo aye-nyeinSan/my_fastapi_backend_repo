@@ -24,5 +24,10 @@ First step,
 
 then, start your server running this cmd in terminal.
 ```
-uvicorn main:app --reload
+uvicorn app.main:app --reload
+```
+
+# Testing 
+```
+TESTING=1 PYTHONPATH=. pytest -s
 ```

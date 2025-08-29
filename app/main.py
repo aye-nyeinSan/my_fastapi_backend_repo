@@ -6,12 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException,Depends
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from core.db import engine,Base
+from app.repository.db import test_engine,engine,Base
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import AsyncEngine
-import models
+import app.models
 
-from routes import retrain,auth,userInput,predict,apikeys_management
+from app.routes import retrain,auth,userInput,predict,apikeys_management
 from typing import Annotated
 
 
@@ -48,8 +49,12 @@ app.include_router(apikeys_management.router)
 async def startup_event():
     print("Application startup: Initializing database...")
     try:
-         async with engine.begin() as conn:
+        async with engine.begin() as conn:
              await conn.run_sync(Base.metadata.create_all)
+       # Only run test DB init if in test mode
+        if os.getenv("TESTING") == "1":
+            async with test_engine.connect() as test_conn:
+                await test_conn.run_sync(Base.metadata.create_all)
     finally:
         await conn.close()  # Ensure the connection is closed after use
     print("Application startup: Database tables created (or already exist).")
@@ -58,7 +63,8 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     print("Application shutdown: Disposing database engine...")
-    await engine.dispose()  # Properly closes all pooled connections
+    await engine.dispose()
+    await test_engine.dispose()# Properly closes all pooled connections
     print("Application shutdown: Database engine disposed.")
 
     

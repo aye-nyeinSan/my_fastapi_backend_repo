@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from typing import Annotated
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import Session
@@ -25,11 +25,18 @@ POSTGRES_DATABASE = os.getenv("POSTGRES_DATABASE")
 DATABASE_URL=POSTGRES_URL_NON_POOLING
 DATABASE_URL_ASYNC= POSTGRES_URL_NON_POOLING_ASYNC
 
+#Testing Database URL
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
 
-#Async database engine setup
+#Setup Test database URL
+test_engine = create_engine(TEST_DATABASE_URL, echo=True)
+Test_Async_Session_Local = sessionmaker(autocommit=False, autoflush=False,
+                                 bind=test_engine, class_=AsyncSession, expire_on_commit=False)
+
+#Async production database engine setup
 engine = create_async_engine(DATABASE_URL_ASYNC, echo=True)
-AsyncSessionLocal = sessionmaker(autocommit=False, autoflush=False,
+Async_Session_Local = sessionmaker(autocommit=False, autoflush=False,
                                  bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 # Synchronous database engine setup
@@ -39,13 +46,24 @@ AsyncSessionLocal = sessionmaker(autocommit=False, autoflush=False,
 
 Base=declarative_base()
 
-
+#Dependency to get the production database session [Production purposes]
 async def get_db_session() -> AsyncSession:
-    async with AsyncSessionLocal() as session:  
+    try:
+     async with Async_Session_Local() as session:  
         yield session  
+    finally:
+        await session.close()
 
 db_dependency = Annotated[AsyncSession, Depends(get_db_session)]
 
+#Dependency to get the test database session [Testing purposes]
+async def get_test_db_session() -> AsyncSession:
+    try:
+        async with Test_Async_Session_Local() as session:
+            yield session
+    finally:
+        await session.close()
 
+test_db_dependency = Annotated[AsyncSession, Depends(get_test_db_session)]
 
 

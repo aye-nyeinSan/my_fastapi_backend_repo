@@ -1,12 +1,12 @@
 
 from fastapi import APIRouter, HTTPException, Depends, Request
 from starlette import status
-from schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
-from utils.auth import get_current_user, hash_password
+from app.schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
+from app.utils.auth import get_current_user, hash_password
 from typing import List, Optional
-from schemas.schemas import TokenData
-from core.dataLayer.api_keys_layer import insert_new_api_key, get_api_key_info_from_user, check_if_key_exists, delete_api_key
-from core.db import db_dependency
+from app.schemas.schemas import TokenData
+from app.repository.dataLayer.api_keys_layer import insert_new_api_key, get_api_key_info_from_user, check_if_key_exists, delete_api_key
+from app.repository.db import db_dependency
 import secrets
 
 router = APIRouter()

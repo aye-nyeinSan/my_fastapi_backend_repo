@@ -1,9 +1,9 @@
 from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy.orm import Session
-from schemas.schemas import *
-from models import sentiment_result
-from utils.auth import get_current_user,get_current_user_optional
-from core.db import AsyncSessionLocal,db_dependency
+from app.schemas.schemas import *
+from app.models import sentiment_result
+from app.utils.auth import get_current_user,get_current_user_optional
+from app.repository.db import db_dependency
 from typing import List,Optional
 import joblib,os
 from sqlalchemy.ext.asyncio import AsyncSession
