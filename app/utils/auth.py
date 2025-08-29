@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, Request
 from typing import Optional
-from schemas.schemas import TokenData
+from app.schemas.schemas import TokenData
 import os
 
 # Load environment variables

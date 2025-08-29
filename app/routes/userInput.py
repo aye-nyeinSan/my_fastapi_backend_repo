@@ -1,58 +1,20 @@
 import csv
 import io
-import os
 from typing import List, Optional
 
-
-from LLMmodels.deploy_model_20250615_133439 import predict_sentiment
-from pydantic import BaseModel, Field
 from starlette import status
-from schemas.schemas import UserInputRequest, SentimentResult, Probabilities, OverAllSentimentResult, TokenData, DBSentimentResult, DBSentimentResultReponse
 from fastapi import APIRouter, HTTPException, Depends
-from core.dataLayer.sentiment_results import insert_sentiment_results, get_all_sentiment_results
-from core.db import db_dependency
-from utils.auth import get_current_user,get_current_user_optional
-
-from utils.sentiment_results import map_db_sentiment_to_pydantic
+from app.repository.db import db_dependency
+from app.schemas.schemas import  UserInputRequest, OverAllSentimentResult, SentimentResult, DBSentimentResult, DBSentimentResultReponse,TokenData
+from app.utils.userInput import process_text_for_sentiment
+from app.repository.dataLayer.sentiment_results import get_all_sentiment_results
+from app.utils.sentiment_results import map_db_sentiment_to_pydantic
+from app.utils.auth import get_current_user, get_current_user_optional
 
 router = APIRouter()
 
 
-async def perform_sentiment_analysis(text: str):
-    # Placeholder for sentiment analysis logic
-    result = predict_sentiment(text)
-    return result
 
-# helper function for processing sentiment analysis and save to db object
-
-
-async def process_text_for_sentiment(
-    text: str,
-    db: db_dependency,
-    user_id: int
-) -> SentimentResult:
-
-    analysis_result = await perform_sentiment_analysis(text)
-    confidence = analysis_result['probabilities'].get(
-        f"class_{analysis_result['predicted_class']}", 0.0)
-
- # Create SentimentResult object
-    sentiment_result = SentimentResult(
-        text=text,
-        predicted_label=analysis_result['predicted_label'],
-        predicted_class=analysis_result['predicted_class'],
-        probabilities=Probabilities(
-            class_0=analysis_result['probabilities'].get(
-                'class_0', 0.0),
-            class_1=analysis_result['probabilities'].get(
-                'class_1', 0.0),
-            class_minus_1=analysis_result['probabilities'].get(
-                'class_-1', 0.0)
-        ),
-        confidence=confidence
-    )
-    await insert_sentiment_results(db, sentiment_result, user_id)
-    return sentiment_result
 
 
 @router.post("/userinput", status_code=status.HTTP_201_CREATED, response_model=OverAllSentimentResult)
@@ -93,7 +55,7 @@ async def submit_user_input(input_data: UserInputRequest, db: db_dependency, cur
         )
 
     return {
-        "message": "Files processed",
+        "message": "Sentiment analysis completed successfully.",
         "results": all_results
     }
 

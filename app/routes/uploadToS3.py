@@ -1,6 +1,6 @@
-from schemas.schemas import AWS_PreSigned_Response, AWS_PreSigned_Request
+from app.schemas.schemas import AWS_PreSigned_Response, AWS_PreSigned_Request
 from fastapi import APIRouter, HTTPException, UploadFile, Depends, File
-from settings import AWS_settings, s3_client
+from app.settings import AWS_settings, s3_client
 from uuid import uuid4
 import re  
 
