@@ -1,0 +1,12 @@
+[34m[1mwandb[0m:   2 of 2 files downloaded.  
+Artifact downloaded to: /Users/andreabassick/Desktop/SeniorProject/my_fastapi_backend_repo/artifacts/simple_lstm_best_model_20250828_022907:v0
+/Users/andreabassick/Desktop/SeniorProject/my_fastapi_backend_repo/fastapi/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator CountVectorizer from version 1.5.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Users/andreabassick/Desktop/SeniorProject/my_fastapi_backend_repo/fastapi/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator LogisticRegression from version 1.5.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/Users/andreabassick/Desktop/SeniorProject/my_fastapi_backend_repo/fastapi/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.5.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+✅ Sentiment model loaded successfully.

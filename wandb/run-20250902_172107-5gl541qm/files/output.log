@@ -1,0 +1,36 @@
+[34m[1mwandb[0m:   2 of 2 files downloaded.  
+Artifact downloaded to: /Users/andreabassick/Desktop/SeniorProject/my_fastapi_backend_repo/artifacts/simple_lstm_best_model_20250828_022907:v0
+2025-09-02 17:21:13,132 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-09-02 17:21:13,133 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-02 17:21:13,305 INFO sqlalchemy.engine.Engine select current_schema()
+2025-09-02 17:21:13,306 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-02 17:21:13,478 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-09-02 17:21:13,478 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-09-02 17:21:13,606 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-02 17:21:13,616 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-09-02 17:21:13,616 INFO sqlalchemy.engine.Engine [generated in 0.00052s] ('testing', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-09-02 17:21:13,751 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-09-02 17:21:13,751 INFO sqlalchemy.engine.Engine [cached since 0.1357s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-09-02 17:21:13,794 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-09-02 17:21:13,795 INFO sqlalchemy.engine.Engine [cached since 0.1793s ago] ('api_keys', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-09-02 17:21:13,837 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-09-02 17:21:13,838 INFO sqlalchemy.engine.Engine [cached since 0.2223s ago] ('sentiment_results', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-09-02 17:21:13,888 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2025-09-02 17:21:13,888 INFO sqlalchemy.engine.Engine [generated in 0.00056s] ('account_status', 'pg_catalog')
+2025-09-02 17:21:13,976 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2025-09-02 17:21:13,977 INFO sqlalchemy.engine.Engine [cached since 0.08939s ago] ('sentiment', 'pg_catalog')
+2025-09-02 17:21:14,021 INFO sqlalchemy.engine.Engine COMMIT
+Application startup: Database tables created (or already exist).
+[32mINFO[0m:     Application startup complete.

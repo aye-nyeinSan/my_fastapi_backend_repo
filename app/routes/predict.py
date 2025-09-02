@@ -9,30 +9,28 @@ import joblib,os
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
+from app.utils.load_model import get_model
+
 
 router= APIRouter()
-model_path = os.path.join(os.path.dirname(__file__), '..', 'LLMmodels', 'best_model_logistic_regression_bow_20250615_133524.pkl')
 
-
-
-try:
-    model = joblib.load(model_path)
-    print("✅ Sentiment model loaded successfully.")
-except Exception as e:
-    model = None
-    print(f"❌ Failed to load model: {e}")
 
 @router.post("/predict",response_model=PredictResponse)
 async def predict_sentiment(
     req:PredictRequest,
     db:db_dependency,
+    model= Depends(get_model),
     current_user: Optional[TokenData] = Depends(get_current_user_optional)
+    
 ):
     if model is None:
         raise HTTPException(status_code=500,detail="Sentiment model not loaded")
     
     # predict 
     text=req.text
+    print("Input Text:::::",text)
+    print("Model :::::", model)
+    
     prediction= model.predict([text])[0]
     proba= model.predict_proba([text])[0] if hasattr(model,'predict_proba') else None
     label_map={0:"Neutral",1:"Positive",-1:"Negative"}

@@ -1,0 +1,13 @@
+{"time":"2025-09-02T15:46:05.631824+07:00","level":"INFO","msg":"stream: starting","core version":"0.21.1"}
+{"time":"2025-09-02T15:46:06.085738+07:00","level":"INFO","msg":"stream: created new stream","id":"ridpso2o"}
+{"time":"2025-09-02T15:46:06.085769+07:00","level":"INFO","msg":"stream: started","id":"ridpso2o"}
+{"time":"2025-09-02T15:46:06.085786+07:00","level":"INFO","msg":"sender: started","stream_id":"ridpso2o"}
+{"time":"2025-09-02T15:46:06.085788+07:00","level":"INFO","msg":"writer: started","stream_id":"ridpso2o"}
+{"time":"2025-09-02T15:46:06.085801+07:00","level":"INFO","msg":"handler: started","stream_id":"ridpso2o"}
+{"time":"2025-09-02T15:46:10.138201+07:00","level":"WARN","msg":"sender: sendUseArtifact: job builder disabled, skipping"}
+{"time":"2025-09-02T15:46:12.224817+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.248025,"progress":"2.0KB/2.0KB"}],"total_operations":1}}
+{"time":"2025-09-02T15:46:12.34727+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-02T15:46:12.792005+07:00","level":"INFO","msg":"stream: closing","id":"ridpso2o"}
+{"time":"2025-09-02T15:46:12.792048+07:00","level":"INFO","msg":"handler: closed","stream_id":"ridpso2o"}
+{"time":"2025-09-02T15:46:12.792283+07:00","level":"INFO","msg":"sender: closed","stream_id":"ridpso2o"}
+{"time":"2025-09-02T15:46:12.792303+07:00","level":"INFO","msg":"stream: closed","id":"ridpso2o"}

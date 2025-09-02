@@ -1,0 +1,13 @@
+{"time":"2025-09-02T17:24:53.501797+07:00","level":"INFO","msg":"stream: starting","core version":"0.21.1"}
+{"time":"2025-09-02T17:24:53.945271+07:00","level":"INFO","msg":"stream: created new stream","id":"dapo8lrh"}
+{"time":"2025-09-02T17:24:53.945309+07:00","level":"INFO","msg":"stream: started","id":"dapo8lrh"}
+{"time":"2025-09-02T17:24:53.94532+07:00","level":"INFO","msg":"writer: started","stream_id":"dapo8lrh"}
+{"time":"2025-09-02T17:24:53.945341+07:00","level":"INFO","msg":"handler: started","stream_id":"dapo8lrh"}
+{"time":"2025-09-02T17:24:53.945377+07:00","level":"INFO","msg":"sender: started","stream_id":"dapo8lrh"}
+{"time":"2025-09-02T17:24:57.978439+07:00","level":"WARN","msg":"sender: sendUseArtifact: job builder disabled, skipping"}
+{"time":"2025-09-02T17:25:00.971085+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading wandb-summary.json","runtime_seconds":0.682845334,"progress":"37B/37B"},{"desc":"uploading config.yaml","runtime_seconds":0.249771833,"progress":"2.0KB/2.0KB"}],"total_operations":2}}
+{"time":"2025-09-02T17:25:01.597312+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-09-02T17:25:02.00191+07:00","level":"INFO","msg":"stream: closing","id":"dapo8lrh"}
+{"time":"2025-09-02T17:25:02.001934+07:00","level":"INFO","msg":"handler: closed","stream_id":"dapo8lrh"}
+{"time":"2025-09-02T17:25:02.002052+07:00","level":"INFO","msg":"sender: closed","stream_id":"dapo8lrh"}
+{"time":"2025-09-02T17:25:02.002063+07:00","level":"INFO","msg":"stream: closed","id":"dapo8lrh"}
