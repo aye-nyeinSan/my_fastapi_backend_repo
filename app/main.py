@@ -13,9 +13,10 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.settings import AWS_Settings, s3_client
 from app.routes import retrain,auth,userInput,predict,apikeys_management,uploadToS3
-from typing import Annotated
+
 from contextlib import asynccontextmanager
 from app.utils.load_model import load_model
+from app.utils.api_services import CustomRateLimitMiddleware
 
 load_dotenv(dotenv_path=Path(
     __file__).resolve().parent / ".env", override=True)
@@ -25,7 +26,9 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost"
 ]
-
+rate_limits = {
+    "/predict": (5, 60),
+}  # 5 requests per 60 seconds
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -63,6 +66,7 @@ app.add_middleware(
 )
 
 
+app.add_middleware(CustomRateLimitMiddleware, limits=rate_limits)
 # Routers
 app.include_router(auth.router)
 app.include_router(predict.router)
