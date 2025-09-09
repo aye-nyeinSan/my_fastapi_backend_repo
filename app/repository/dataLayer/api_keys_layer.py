@@ -4,7 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
 from sqlalchemy import select
 from typing import List
+from passlib.context import CryptContext
 
+# Password hashing context
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 async def insert_new_api_key(
     api_key: api_key_achema,
@@ -96,3 +99,18 @@ async def delete_api_key(db: AsyncSession,
         raise ValueError("API key not found.")
     return api_key
     
+
+async def check_if_token_exists(db: AsyncSession,
+                              api_key: str,
+            ):
+    """Function to check if API token exists.
+    """
+    
+    query = select(api_key_db).where(
+        api_key_db.public_key == api_key,
+                api_key_db.account_status == 'active',
+       
+                                     )
+    existing_key = await db.scalar(query)
+  
+    return existing_key
