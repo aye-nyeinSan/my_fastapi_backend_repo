@@ -15,8 +15,12 @@ async def insert_sentiment_results(
     """
     sentiment_str = sentiment_data.predicted_label.lower()
     sentiment_enum = sentiment_types(sentiment_str)
+    
+    # For now, skip database insertion if no user_id
+    # TODO: Consider creating a guest user or making user_id optional in the schema
     if user_id is None:
-        return
+        return True  # Return True to indicate "success" even without DB storage
+    
     new_result = sentiment_resultDB(
         user_id=user_id,
         input_text=sentiment_data.text,
@@ -28,7 +32,7 @@ async def insert_sentiment_results(
     db.add(new_result)
     await db.commit()
     await db.refresh(new_result)
-    return new_result
+    return True
 
 
 async def get_all_sentiment_results(db: AsyncSession, user_id:int):

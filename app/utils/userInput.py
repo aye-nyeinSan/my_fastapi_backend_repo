@@ -1,25 +1,22 @@
 
-from fastapi import  HTTPException, status, APIRouter, Depends
+from fastapi import  FastAPI, HTTPException, status, APIRouter, Depends
+from app.utils.load_model import get_model
 from app.repository.db import db_dependency
 from app.schemas.schemas import SentimentResult, Probabilities
 from app.repository.dataLayer.sentiment_results import insert_sentiment_results
-from app.utils.load_model import load_model
 
 
 
-
-
-#helper function to predict sentiment from the model
-def predict_sentiment(text):
+def predict_sentiment(model, text):
     """
-    Predict sentiment for a single text
+    Predict sentiment for a single text using preloaded model
     Args:
+        model: The preloaded model from app.state
         text (str): Input text to classify
     Returns:
         dict: Prediction results
     """
     # Make prediction
-    model = load_model()
     prediction = model.predict([text])[0]
     probabilities = model.predict_proba([text])[0] if hasattr(
         model, 'predict_proba') else None
@@ -43,44 +40,58 @@ def predict_sentiment(text):
 
     return result
 
-# helper function for processing sentiment analysis and save to db object
+
 async def process_text_for_sentiment(
     text: str,
     db: db_dependency,
-    user_id: int
+    user_id: int,
+    model: any
 ) -> SentimentResult:
-
-    analysis_result = await perform_sentiment_analysis(text)
+    """
+    Process the sentiment analysis for the given text, and save the result to the database.
+    """
+    # Perform sentiment analysis
+    # Use model here
+    analysis_result = await perform_sentiment_analysis(text, model)
     confidence = analysis_result['probabilities'].get(
-        f"class_{analysis_result['predicted_class']}", 0.0)
+        f"class_{analysis_result['predicted_class']}", 0.0
+    )
 
- # Create SentimentResult object
+    # Create SentimentResult object
     sentiment_result = SentimentResult(
         text=text,
         predicted_label=analysis_result['predicted_label'],
         predicted_class=analysis_result['predicted_class'],
         probabilities=Probabilities(
-            class_0=analysis_result['probabilities'].get(
-                'class_0', 0.0),
-            class_1=analysis_result['probabilities'].get(
-                'class_1', 0.0),
-            class_minus_1=analysis_result['probabilities'].get(
-                'class_-1', 0.0)
+            class_0=analysis_result['probabilities'].get('class_0', 0.0),
+            class_1=analysis_result['probabilities'].get('class_1', 0.0),
+            class_minus_1=analysis_result['probabilities'].get('class_-1', 0.0)
         ),
         confidence=confidence
     )
+
+    # Insert the result into the database
     insert_db = await insert_sentiment_results(db, sentiment_result, user_id)
     if not insert_db:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to insert sentiment result into the database."
         )
+
     return sentiment_result
 
+async def perform_sentiment_analysis(text: str, model: any) -> dict:
+    """
+    Perform sentiment analysis using the injected model.
 
-async def perform_sentiment_analysis(text: str):
-    # Placeholder for sentiment analysis logic
-    result = predict_sentiment(text)
+    Args:
+        text (str): The input text to classify.
+        model (any): The preloaded model.
+
+    Returns:
+        dict: Sentiment analysis results.
+    """
+    result = predict_sentiment(model, text)  # Use the model from dependency
     if not result:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

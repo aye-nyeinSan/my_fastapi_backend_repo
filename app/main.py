@@ -79,9 +79,9 @@ app.include_router(retrain.router)
 app.include_router(userInput.router)
 app.include_router(apikeys_management.router)
 app.include_router(uploadToS3.router, prefix="/api/v1")
+# Dependency to access the preloaded model
 
-# WebSocket endpoint for interactive shell (example)
-# app.py
+
 
 @app.websocket("/ws")
 async def ws_shell(ws: WebSocket):

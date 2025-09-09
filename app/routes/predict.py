@@ -1,9 +1,9 @@
-from fastapi import APIRouter,Depends,HTTPException
+from fastapi import APIRouter,Depends,HTTPException,Request
 from app.schemas.schemas import *
 from app.models import sentiment_result
 from app.utils.auth import get_current_user,get_current_user_optional
 from app.repository.db import db_dependency
-from typing import List,Optional,Annotated
+from typing import List,Optional
 from sqlalchemy import select
 from app.utils.load_model import get_model
 from fastapi.security.api_key import APIKeyHeader
@@ -18,7 +18,7 @@ Api_Key_header = APIKeyHeader(name="X-Api-Key", auto_error=False)
 async def predict_sentiment(
     req:PredictRequest,
     db:db_dependency,
-    api_key: Annotated[str, Depends(Api_Key_header)],
+    api_key: str = Depends(Api_Key_header),
     model= Depends(get_model),
     current_user: Optional[TokenData] = Depends(get_current_user_optional)
     
