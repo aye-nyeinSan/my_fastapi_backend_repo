@@ -1,8 +1,10 @@
+
+from fastapi import FastAPI
 import joblib
 import os
 import wandb
 import datetime
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException,Depends
 
 
 def load_model():
@@ -43,9 +45,12 @@ def load_model():
     return model
 
 
-def get_model(request: Request):
-    model = request.app.state.model
-    if model is None:
-        raise HTTPException(
-            status_code=503, detail="Sentiment model  is not loaded")
-    return model
+def get_model(request: Request) -> any:
+    """
+    Dependency to access the preloaded model stored in app.state.
+    """
+    return request.app.state.model
+
+
+
+
