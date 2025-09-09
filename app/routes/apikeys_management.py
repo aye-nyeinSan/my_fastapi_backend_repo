@@ -1,4 +1,5 @@
 
+from passlib.context import CryptContext
 from fastapi import APIRouter, HTTPException, Depends, Request
 from starlette import status
 from app.schemas.schemas import Api_Key as api_key_achema, Api_KeyDBResponse
@@ -11,6 +12,9 @@ import secrets
 
 router = APIRouter()
 
+
+# Password hashing context
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 @router.post("/api_key_creation", status_code=status.HTTP_201_CREATED)
 async def create_api_key(request: api_key_achema, db: db_dependency, current_user: Optional[TokenData] = Depends(get_current_user)):
@@ -36,13 +40,14 @@ async def create_api_key(request: api_key_achema, db: db_dependency, current_use
             detail=f"API key with  name '{key_name}' already exists for the user."
         )
     # generate public_key and hashkey
-    hash_key = hash_password(key_name)
-    public_key = f"pk-{hash_key[:10]}{secrets.token_urlsafe(32)}"
+    public_key = f"pk_{secrets.token_urlsafe(16)}"
+    secret = f"sk_{secrets.token_urlsafe(32)}"
+    hashkey = pwd_context.hash(secret)
 
     api_key_obj = request.model_copy(update={
         "account_status": "active",
-        "public_key": f"pk-{hash_key[:10]}{secrets.token_urlsafe(32)}",
-        "hashkey": hash_key
+        "public_key": public_key,
+        "hashkey": hashkey
     })
 
     # insert into DB table
