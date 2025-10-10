@@ -1,38 +1,38 @@
-from fastapi import APIRouter,Depends,HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter,Depends,HTTPException,Request
 from app.schemas.schemas import *
 from app.models import sentiment_result
 from app.utils.auth import get_current_user,get_current_user_optional
 from app.repository.db import db_dependency
 from typing import List,Optional
-import joblib,os
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from app.utils.load_model import get_model
+from fastapi.security.api_key import APIKeyHeader
+from app.repository.dataLayer.api_keys_layer import check_if_token_exists
+
 
 
 router= APIRouter()
-model_path = os.path.join(os.path.dirname(__file__), '..', 'LLMmodels', 'best_model_logistic_regression_bow_20250615_133524.pkl')
-
-
-
-try:
-    model = joblib.load(model_path)
-    print("✅ Sentiment model loaded successfully.")
-except Exception as e:
-    model = None
-    print(f"❌ Failed to load model: {e}")
+Api_Key_header = APIKeyHeader(name="X-Api-Key", auto_error=False)
 
 @router.post("/predict",response_model=PredictResponse)
 async def predict_sentiment(
     req:PredictRequest,
     db:db_dependency,
+    api_key: str = Depends(Api_Key_header),
+    model= Depends(get_model),
     current_user: Optional[TokenData] = Depends(get_current_user_optional)
+    
 ):
     if model is None:
         raise HTTPException(status_code=500,detail="Sentiment model not loaded")
     
+    check_if_token_exists_result = await check_if_token_exists(db,api_key)
+    if not check_if_token_exists_result:
+        raise HTTPException(status_code=401, detail="Invalid API Key")
+    print(f">>> API Key found: {check_if_token_exists_result}")
+        
     # predict 
-    text=req.text
+    text=req.text       
     prediction= model.predict([text])[0]
     proba= model.predict_proba([text])[0] if hasattr(model,'predict_proba') else None
     label_map={0:"Neutral",1:"Positive",-1:"Negative"}

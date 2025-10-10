@@ -70,7 +70,7 @@ class PredictRequest(BaseModel):
 class PredictResponse(BaseModel):
     text:str
     sentiment:str
-    confidence:float | None
+    confidence: Optional[float]
 
 
 class Probabilities(BaseModel):

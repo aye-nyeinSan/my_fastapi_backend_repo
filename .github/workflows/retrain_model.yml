@@ -37,13 +37,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ml-requirements.txt
 
-      # Login to WandB
-      - name: Login WandB
-        env:
-          WANDB_API_KEY: ${{ secrets.WANDB_LOGIN_KEY }}
-        run: |
-          wandb login $WANDB_API_KEY
-          echo "Logged into WandB"
 
       # Create notebooks directory
       - name: Create notebooks directory
