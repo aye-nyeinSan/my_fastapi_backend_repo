@@ -1,10 +1,12 @@
 
-from fastapi import FastAPI
-import joblib
-import os
-import wandb
 import datetime
-from fastapi import Request, HTTPException,Depends
+import os
+import joblib
+import wandb
+from fastapi import Request
+import logging
+
+logger = logging.getLogger("uvicorn.error")
 
 
 def load_model():
@@ -22,25 +24,35 @@ def load_model():
         print(f"Artifact downloaded to: {artifact_dir}")
 
         
-    
         model = None
         for file in os.listdir(artifact_dir):
+            print(f"Found file: {file}")
             if file.endswith('.h5') or file.endswith('.pkl'):
-                model = os.path.join(artifact_dir, file)
+                modelpath = os.path.join(artifact_dir, file)
+                print(f"Model file found: {modelpath}")
                 break
 
 
        
-        model = joblib.load(model)
-        print("✅ Sentiment model loaded successfully.", model)
+        model = joblib.load(modelpath)
+        logger.info("Loaded model: %s | has predict_proba=%s",
+                    type(model), hasattr(model, "predict_proba"))
+        if model is None:
+            raise ValueError("Model could not be loaded.")
+        print(f"✅ Sentiment model loaded successfully." )
             
             
     except Exception as e:
             model = None
-            
-            print(f"❌ Failed to load model: {e}")
+            logger.exception("❌ Failed to load model")
+            print(f"❌ Failed to load model: {e.__class__.__name__}: {e}")
+        
     finally:
-            run.finish()
+            try:
+              if run is not None:
+                run.finish()
+            except Exception:
+             pass
         
     return model
 

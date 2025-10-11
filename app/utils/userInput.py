@@ -1,9 +1,10 @@
 
-from fastapi import  FastAPI, HTTPException, status, APIRouter, Depends
+from fastapi import  HTTPException, status
 from app.utils.load_model import get_model
 from app.repository.db import db_dependency
 from app.schemas.schemas import SentimentResult, Probabilities
 from app.repository.dataLayer.sentiment_results import insert_sentiment_results
+
 
 
 
@@ -16,6 +17,7 @@ def predict_sentiment(model, text):
     Returns:
         dict: Prediction results
     """
+        
     # Make prediction
     prediction = model.predict([text])[0]
     probabilities = model.predict_proba([text])[0] if hasattr(
@@ -91,6 +93,11 @@ async def perform_sentiment_analysis(text: str, model: any) -> dict:
     Returns:
         dict: Sentiment analysis results.
     """
+    if(model is None):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="ML model is not loaded"
+        )
     result = predict_sentiment(model, text)  # Use the model from dependency
     if not result:
         raise HTTPException(
